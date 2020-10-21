@@ -18,10 +18,6 @@ const app = express();
 //   app.use(morgan("dev"));
 // }
 
-app.get("/", (req, res) => {
-  res.send("API is runing ...");
-});
-
 app.use(express.json()); // to accept json data in body
 
 app.use("/api/products", productRoutes);
@@ -33,19 +29,19 @@ app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 );
 
-// const __dirname = path.resolve(); // Because ES6 modules is used we cant use __dirname like in nodejs
-// // app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static(path.join(__dirname, "/frontend/build")));
+const __dirname = path.resolve(); // Because ES6 modules is used we cant use __dirname like in nodejs
+// app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
 
-//   app.get("*", (req, res) =>
-//     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
-//   );
-// } else {
-//   app.get("/", (req, res) => {
-//     res.send("API is runing ...");
-//   });
-// }
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is runing ...");
+  });
+}
 
 // Error Handling //
 app.use(notFound);
